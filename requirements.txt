@@ -4,3 +4,4 @@ openai-whisper
 torch
 soundfile
 python-multipart
+requests
