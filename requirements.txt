@@ -1,4 +1,6 @@
 fastapi
-uvicorn
-pip install git+https://github.com/openai/whisper.git
+uvicorn[standard]
+openai-whisper
 torch
+soundfile
+python-multipart

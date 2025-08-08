@@ -43,8 +43,8 @@
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/<your-username>/talkvision-backend.git
-cd talkvision-backend
+git clone https://github.com/The-Harsh-Vardhan/TalkVision.git
+cd TalkVision
 ```
 
 ### 2. Install dependencies
@@ -59,26 +59,252 @@ pip install -r requirements.txt
 uvicorn app:app --reload
 ```
 
-### 4. Deploy to Render
+### 4. Deploy to Render/Railway
 
-Create a new Web Service
+#### Render Deployment:
 
-Use uvicorn app:app --host 0.0.0.0 --port 10000 as Start Command
+1. Create a new Web Service on [Render](https://render.com)
+2. Connect your GitHub repository
+3. Use the following settings:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app:app --host 0.0.0.0 --port $PORT`
+   - **Environment**: Python 3.9+
+4. Deploy and get your API URL
 
-Ensure Whisper and Torch are supported (Render supports GPU options)
+#### Railway Deployment:
 
-## 📡 API Endpoint
+1. Create a new project on [Railway](https://railway.app)
+2. Connect your GitHub repository
+3. Railway will automatically detect and deploy your FastAPI app
+4. Your API will be available at the provided Railway URL
 
-POST /transcribe/
+#### Environment Variables (Optional):
 
-Field Type Description
-file audio/wav Audio chunk uploaded via POST
+- `WHISPER_MODEL`: Set to "tiny" for faster inference or "base" for better accuracy
+- `MAX_FILE_SIZE`: Maximum audio file size in bytes (default: 25MB)
 
-Response:
+## 📡 API Endpoints
 
-json
-Copy
-Edit
+### GET /
+
+Returns API status
+
+**Response:**
+
+```json
 {
-"transcript": "This is your subtitle in real-time."
+  "message": "TalkVision API is running"
 }
+```
+
+### POST /transcribe/
+
+Transcribe audio to text
+
+**Parameters:**
+| Field | Type | Description |
+|-------|------|-------------|
+| file | audio/wav | Audio chunk uploaded via POST |
+
+**Response:**
+
+```json
+{
+  "transcript": "This is your subtitle in real-time."
+}
+```
+
+**Example Usage with cURL:**
+
+```bash
+curl -X POST "https://your-api-url.com/transcribe/" \
+     -H "accept: application/json" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@audio_sample.wav"
+```
+
+**Example ESP32 Integration:**
+
+```cpp
+// ESP32 HTTP POST example
+HTTPClient http;
+http.begin("https://your-api-url.com/transcribe/");
+http.addHeader("Content-Type", "multipart/form-data");
+// Add your audio file data here
+---
+
+## 📁 Project Structure
+
+```
+
+TalkVision/
+├── app.py # Main FastAPI application
+├── whisper_model.py # Whisper ASR model wrapper
+├── utils.py # Utility functions for audio processing
+├── requirements.txt # Python dependencies
+├── Procfile # Deployment configuration
+├── runtime.txt # Python version specification
+├── .gitignore # Git ignore rules
+├── .dockerignore # Docker ignore rules
+└── README.md # Project documentation
+
+````
+
+---
+
+## 🔧 Local Development
+
+### Prerequisites
+- Python 3.9+
+- pip package manager
+- Audio codecs (automatically installed with dependencies)
+
+### Installation Steps
+1. **Clone and setup:**
+   ```bash
+   git clone https://github.com/The-Harsh-Vardhan/TalkVision.git
+   cd TalkVision
+   python -m venv venv
+````
+
+2. **Activate virtual environment:**
+
+   ```bash
+   # Windows
+   venv\Scripts\activate
+
+   # macOS/Linux
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run development server:**
+
+   ```bash
+   uvicorn app:app --reload --host 127.0.0.1 --port 8000
+   ```
+
+5. **Test the API:**
+   - Visit: `http://127.0.0.1:8000` for status
+   - API docs: `http://127.0.0.1:8000/docs`
+   - Test transcription with Swagger UI or cURL
+
+---
+
+## 🚀 Quick Test
+
+Test the API with a sample audio file:
+
+```bash
+# Create a test audio file (you'll need an actual .wav file)
+curl -X POST "http://127.0.0.1:8000/transcribe/" \
+     -H "accept: application/json" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@test_audio.wav"
+```
+
+Expected response:
+
+```json
+{
+  "transcript": "Your transcribed text will appear here"
+}
+```
+
+---
+
+## ⚡ Performance Notes
+
+- **Model Selection**:
+  - `tiny`: Fastest inference, lower accuracy
+  - `base`: Balanced speed and accuracy (recommended)
+  - `small`: Better accuracy, slower inference
+- **Audio Format**: Supports WAV, MP3, M4A, FLAC
+- **File Size Limit**: 25MB per request
+- **Processing Time**: 2-8 seconds depending on audio length and model
+
+---
+
+## 🛠️ Configuration
+
+### Environment Variables
+
+Create a `.env` file (optional):
+
+```env
+WHISPER_MODEL=base
+MAX_FILE_SIZE=26214400
+LOG_LEVEL=info
+```
+
+### Model Configuration
+
+Edit `whisper_model.py` to change models:
+
+```python
+# For faster inference (less accurate)
+model = whisper.load_model("tiny")
+
+# For better accuracy (slower)
+model = whisper.load_model("small")
+```
+
+---
+
+## 🧪 Testing
+
+### Manual Testing
+
+1. Start the server: `uvicorn app:app --reload`
+2. Open `http://127.0.0.1:8000/docs`
+3. Use the interactive API documentation to test
+
+### cURL Testing
+
+```bash
+# Health check
+curl http://127.0.0.1:8000/
+
+# Transcription test
+curl -X POST "http://127.0.0.1:8000/transcribe/" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@sample.wav"
+```
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -am 'Add feature'`
+4. Push to branch: `git push origin feature-name`
+5. Submit a Pull Request
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Author
+
+**The-Harsh-Vardhan**
+
+- GitHub: [@The-Harsh-Vardhan](https://github.com/The-Harsh-Vardhan)
+- Project: [TalkVision](https://github.com/The-Harsh-Vardhan/TalkVision)
+
+---
+
+## 🙏 Acknowledgments
+
+- [OpenAI Whisper](https://github.com/openai/whisper) for speech recognition
+- [FastAPI](https://fastapi.tiangolo.com/) for the web framework
+- [Render](https://render.com/) / [Railway](https://railway.app/) for deployment platforms
