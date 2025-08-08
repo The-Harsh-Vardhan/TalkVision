@@ -1,0 +1,38 @@
+# cURL Testing Commands for TalkVision API
+
+## Basic POST request with audio file
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -H "accept: application/json" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@your_audio_file.wav"
+
+## Examples with different audio formats
+# WAV file
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@test_audio.wav"
+
+# MP3 file  
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@test_audio.mp3"
+
+# M4A file
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@test_audio.m4a"
+
+## Save response to file
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@your_audio.wav" \
+     -o response.json
+
+## Verbose output to see headers and debug info
+curl -v -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@your_audio.wav"
+
+## Test with timeout
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
+     -F "file=@your_audio.wav" \
+     --max-time 60
+
+## Windows PowerShell version
+# Use this in PowerShell on Windows:
+curl.exe -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" -F "file=@your_audio.wav"

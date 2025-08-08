@@ -1,0 +1,57 @@
+# Postman/API Testing Tool Configuration
+
+## For Postman, Insomnia, or similar API testing tools:
+
+### Request Configuration:
+- **Method**: POST
+- **URL**: https://the-harsh-vardhan-talkvision.hf.space/transcribe/
+- **Content-Type**: multipart/form-data
+
+### Headers:
+- Accept: application/json
+- Content-Type: multipart/form-data (auto-set by tool)
+
+### Body Configuration:
+- Type: form-data
+- Key: "file" 
+- Value: [Select your audio file]
+- Content-Type: audio/wav (or appropriate MIME type)
+
+### Supported File Types:
+- .wav (recommended)
+- .mp3
+- .m4a
+- .flac
+- .ogg
+
+### Expected Response:
+```json
+{
+  "transcript": "Your transcribed text here",
+  "language": "en",
+  "confidence": 0.85,
+  "processing_info": {
+    "file_name": "your_audio.wav",
+    "file_size": 156234,
+    "model_used": "base"
+  }
+}
+```
+
+### Common Postman Steps:
+1. Create new POST request
+2. Set URL to: https://the-harsh-vardhan-talkvision.hf.space/transcribe/
+3. Go to Body tab
+4. Select "form-data"
+5. Add key "file", change type to "File"
+6. Choose your audio file
+7. Click Send
+
+### Thunder Client (VS Code Extension):
+1. Install Thunder Client extension
+2. Create new request
+3. Set method to POST
+4. URL: https://the-harsh-vardhan-talkvision.hf.space/transcribe/
+5. Body -> Form -> Add file field named "file"
+6. Upload your audio file
+7. Send request

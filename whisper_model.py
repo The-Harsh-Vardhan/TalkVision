@@ -7,15 +7,23 @@ from typing import Dict, Optional
 MODEL_TYPE = os.getenv("WHISPER_MODEL", "base")
 DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 
+# Set cache directory for Whisper models (important for Docker)
+CACHE_DIR = os.getenv("XDG_CACHE_HOME", os.path.expanduser("~/.cache"))
+os.makedirs(CACHE_DIR, exist_ok=True)
+
 # Load the model globally so it stays in memory
 try:
-    model = whisper.load_model(MODEL_TYPE, device=DEVICE)
+    model = whisper.load_model(MODEL_TYPE, device=DEVICE, download_root=CACHE_DIR)
     print(f"✅ Whisper model '{MODEL_TYPE}' loaded successfully on {DEVICE}")
 except Exception as e:
     print(f"❌ Error loading Whisper model: {e}")
     # Fallback to tiny model if the specified model fails
-    model = whisper.load_model("tiny", device="cpu")
-    print("🔄 Fallback: Loaded 'tiny' model on CPU")
+    try:
+        model = whisper.load_model("tiny", device="cpu", download_root=CACHE_DIR)
+        print("🔄 Fallback: Loaded 'tiny' model on CPU")
+    except Exception as fallback_error:
+        print(f"❌ Fallback also failed: {fallback_error}")
+        raise fallback_error
 
 def transcribe_audio(file_path: str, language: Optional[str] = None) -> Dict:
     """

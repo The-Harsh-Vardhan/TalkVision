@@ -59,7 +59,16 @@ pip install -r requirements.txt
 uvicorn app:app --reload
 ```
 
-### 4. Deploy to Render/Railway
+### 4. Deploy to Cloud Platforms
+
+#### Hugging Face Spaces (Recommended):
+
+🚀 **Live Demo**: [https://huggingface.co/spaces/the-harsh-vardhan/TalkVision](https://huggingface.co/spaces/the-harsh-vardhan/TalkVision)
+
+1. Fork this repository
+2. Create a new Space on [Hugging Face Spaces](https://huggingface.co/spaces)
+3. Choose **Docker** as SDK
+4. Upload the files and your Space will auto-deploy
 
 #### Render Deployment:
 
@@ -117,7 +126,14 @@ Transcribe audio to text
 **Example Usage with cURL:**
 
 ```bash
-curl -X POST "https://your-api-url.com/transcribe/" \
+# For local development
+curl -X POST "http://127.0.0.1:8000/transcribe/" \
+     -H "accept: application/json" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@audio_sample.wav"
+
+# For Hugging Face Spaces
+curl -X POST "https://the-harsh-vardhan-talkvision.hf.space/transcribe/" \
      -H "accept: application/json" \
      -H "Content-Type: multipart/form-data" \
      -F "file=@audio_sample.wav"
@@ -126,11 +142,14 @@ curl -X POST "https://your-api-url.com/transcribe/" \
 **Example ESP32 Integration:**
 
 ```cpp
-// ESP32 HTTP POST example
+// ESP32 HTTP POST example - Use your deployed URL
 HTTPClient http;
-http.begin("https://your-api-url.com/transcribe/");
+http.begin("https://the-harsh-vardhan-talkvision.hf.space/transcribe/");
 http.addHeader("Content-Type", "multipart/form-data");
 // Add your audio file data here
+int httpResponseCode = http.POST(audioData);
+```
+
 ---
 
 ## 📁 Project Structure
@@ -148,23 +167,27 @@ TalkVision/
 ├── .dockerignore # Docker ignore rules
 └── README.md # Project documentation
 
-````
+```
 
 ---
 
 ## 🔧 Local Development
 
 ### Prerequisites
+
 - Python 3.9+
 - pip package manager
 - Audio codecs (automatically installed with dependencies)
 
 ### Installation Steps
+
 1. **Clone and setup:**
    ```bash
    git clone https://github.com/The-Harsh-Vardhan/TalkVision.git
    cd TalkVision
    python -m venv venv
+   ```
+
 ````
 
 2. **Activate virtual environment:**
@@ -308,3 +331,4 @@ This project is open source and available under the [MIT License](LICENSE).
 - [OpenAI Whisper](https://github.com/openai/whisper) for speech recognition
 - [FastAPI](https://fastapi.tiangolo.com/) for the web framework
 - [Render](https://render.com/) / [Railway](https://railway.app/) for deployment platforms
+````
