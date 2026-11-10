@@ -2,6 +2,23 @@
 
 **TalkVision** is an AI-powered smart wearable designed to empower the hearing-impaired by providing **real-time subtitles** of spoken language through an IoT-enabled device and cloud-based speech-to-text processing. This repository contains the **cloud software backend** built using **FastAPI** and **Whisper ASR**, which processes short audio clips sent from an ESP32-based wearable and returns transcribed subtitles in JSON format.
 
+![Python](https://img.shields.io/badge/python-3.9%2B-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white) ![Whisper](https://img.shields.io/badge/OpenAI-Whisper-412991) ![License: MIT](https://img.shields.io/badge/License-MIT-green) [![Live demo](https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-Live%20demo-blue)](https://huggingface.co/spaces/the-harsh-vardhan/TalkVision)
+
+**In short:** an ESP32-C6 wearable streams short audio clips to this FastAPI service, Whisper transcribes them, and the subtitle text is shown on an OLED display. [Try the live demo](https://huggingface.co/spaces/the-harsh-vardhan/TalkVision).
+
+```mermaid
+sequenceDiagram
+    participant W as ESP32-C6 wearable
+    participant API as FastAPI /transcribe/
+    participant M as Whisper (tiny/base)
+    W->>W: Capture 3-5 s audio (.wav)
+    W->>API: HTTP POST audio file
+    API->>M: Transcribe audio
+    M-->>API: Text
+    API-->>W: JSON transcript
+    W->>W: Render subtitle on OLED
+```
+
 ---
 
 ## 📌 Project Features
